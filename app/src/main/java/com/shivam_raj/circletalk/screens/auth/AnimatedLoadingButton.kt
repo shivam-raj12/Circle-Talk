@@ -1,6 +1,12 @@
 package com.shivam_raj.circletalk.screens.auth
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -24,7 +30,10 @@ fun AnimatedLoginButton(
 ) {
     AnimatedContent(
         targetState = isLoading,
-        label = ""
+        label = "",
+        transitionSpec = {
+            fadeIn(tween(1000)) + scaleIn(tween(1000)) togetherWith fadeOut(tween(1000)) + scaleOut(tween(1000))
+        }
     ) {
         if (it) {
             Box(

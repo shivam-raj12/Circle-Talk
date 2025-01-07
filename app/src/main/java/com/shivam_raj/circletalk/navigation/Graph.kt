@@ -1,11 +1,17 @@
 package com.shivam_raj.circletalk.navigation
 
+import android.util.Log
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
@@ -15,15 +21,48 @@ import androidx.navigation.compose.rememberNavController
 import com.shivam_raj.circletalk.screens.auth.createAccount.CreateAccountScreen
 import com.shivam_raj.circletalk.screens.auth.loginAccount.LoginAccountScreen
 import com.shivam_raj.circletalk.screens.chat.mainScreen.MainScreen
+import com.shivam_raj.circletalk.server.Server
 import com.shivam_raj.circletalk.storage.CurrentUserManager
+import io.appwrite.exceptions.AppwriteException
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.map
 
 @Composable
-fun NavGraph() {
+fun NavGraph(
+    onDataLoaded: () -> Unit
+) {
     val navController = rememberNavController()
-    val currentUser = CurrentUserManager.getCurrentUserId(LocalContext.current).collectAsStateWithLifecycle(null).value
+    var isUserLoggedIn by remember { mutableStateOf<Boolean?>(null) }
+    val context = LocalContext.current
+    LaunchedEffect(Unit) {
+        try {
+            val ac=Server.getAccountInstance().get()
+            isUserLoggedIn = true
+            onDataLoaded()
+            Log.d("TAG", "NavGraph: $ac")
+        } catch (e: AppwriteException) {
+            Log.d("TAG", "NavGraph: appwrite $e ")
+            isUserLoggedIn = false
+            onDataLoaded()
+        } catch (e: Exception) {
+            Log.d("TAG", "NavGraph: $e")
+            CurrentUserManager.getCurrentUserId(context).map {
+                Log.d("TAG", "NavGraph: $it")
+                it != null
+            }.collectLatest {
+                Log.d("TAG", "NavGraph: $it")
+                isUserLoggedIn = it
+                onDataLoaded()
+            }
+        }
+    }
+    if (isUserLoggedIn==null){
+        CircularProgressIndicator()
+        return
+    }
     NavHost(
         navController = navController,
-        startDestination = if (currentUser == null) Auth else Main
+        startDestination = if (isUserLoggedIn == true) Main else Auth
     ) {
         navigation<Auth>(
             startDestination = AuthDestinations.LoginScreen,

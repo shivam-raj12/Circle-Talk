@@ -1,5 +1,6 @@
 package com.shivam_raj.circletalk.screens.auth.loginAccount
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,7 +20,9 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.shivam_raj.circletalk.navigation.Auth
 import com.shivam_raj.circletalk.navigation.AuthDestinations
+import com.shivam_raj.circletalk.navigation.Main
 import com.shivam_raj.circletalk.screens.auth.AnimatedHeader
 import com.shivam_raj.circletalk.screens.auth.BottomDesignedButton
 import com.shivam_raj.circletalk.screens.auth.Direction
@@ -43,7 +46,12 @@ fun LoginAccountScreen(
         ContentForm(
             snackBarHostState = snackBarHostState,
             onLoggedIn = {
-                // TODO: Move to main screen
+                Log.d("TAG", "LoginAccountScreen: ")
+                navController.navigate(Main){
+                    popUpTo(Auth){
+                        inclusive = true
+                    }
+                }
             }
         )
         BottomDesignedButton(

@@ -3,6 +3,7 @@ package com.shivam_raj.circletalk.server
 import android.content.Context
 import io.appwrite.Client
 import io.appwrite.services.Account
+import io.appwrite.services.Databases
 
 object Server {
     @Volatile
@@ -22,4 +23,5 @@ object Server {
 
     fun getAccountInstance() = Account(client)
 
+    fun getDatabaseInstance() = Databases(client)
 }
