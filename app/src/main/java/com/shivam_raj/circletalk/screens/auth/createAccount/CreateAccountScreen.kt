@@ -19,7 +19,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.shivam_raj.circletalk.navigation.Auth
+import com.shivam_raj.circletalk.navigation.AuthDestinations
 import com.shivam_raj.circletalk.navigation.Main
 import com.shivam_raj.circletalk.screens.auth.AnimatedHeader
 import com.shivam_raj.circletalk.screens.auth.BottomDesignedButton
@@ -44,7 +44,7 @@ fun CreateAccountScreen(
             snackBarHostState = snackBarHostState,
             onAccountCreated = {
                 navController.navigate(Main){
-                    popUpTo(Auth){
+                    popUpTo(AuthDestinations.LoginScreen){
                         inclusive = true
                     }
                 }

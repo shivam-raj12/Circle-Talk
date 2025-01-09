@@ -1,14 +1,25 @@
 package com.shivam_raj.circletalk.screens.auth.loginAccount
 
 import android.util.Patterns
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -16,17 +27,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import com.shivam_raj.circletalk.network.AuthRequest
-import com.shivam_raj.circletalk.screens.auth.AnimatedLoginButton
 import com.shivam_raj.circletalk.screens.auth.FormInput
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ContentForm(
     snackBarHostState: SnackbarHostState,
@@ -60,10 +73,9 @@ fun ContentForm(
             enabled = !viewModel.isLoading
         )
         Spacer(Modifier.height(4.dp))
-        AnimatedLoginButton(
+        Button(
             modifier = Modifier.fillMaxWidth(),
-            isLoading = viewModel.isLoading,
-            buttonText = "Login",
+            shape = MaterialTheme.shapes.medium,
             enabled = buttonEnabled,
             onClick = {
                 coroutineScope.launch {
@@ -75,7 +87,26 @@ fun ContentForm(
                     }
                 }
             }
-        )
+        ){
+            Text(text = "Login")
+        }
+    }
+    AnimatedVisibility(
+        visible = viewModel.isLoading
+    ){
+        BasicAlertDialog(
+            onDismissRequest = {},
+            properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false, usePlatformDefaultWidth = false)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.background(MaterialTheme.colorScheme.surface, shape = MaterialTheme.shapes.medium).padding(horizontal = 12.dp, vertical = 16.dp)
+            ) {
+                CircularProgressIndicator()
+                Text("Loading...", style = MaterialTheme.typography.bodyMedium)
+            }
+        }
     }
 }
 

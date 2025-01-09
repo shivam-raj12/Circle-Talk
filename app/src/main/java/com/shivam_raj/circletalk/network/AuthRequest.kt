@@ -47,7 +47,6 @@ class AuthRequest @Inject constructor(
                 password = password
             )
             CurrentUserManager.storeCurrentUserId(context, user.userId)
-            createPushTarget()
             return null
         } catch (e: AppwriteException) {
             return e.message
