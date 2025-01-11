@@ -28,7 +28,7 @@ object Server {
         this.user = user
     }
 
-    fun getUser() = user
+    fun getUser() = user ?: User.GuestUser
 
     fun getAccountInstance() = Account(client)
 

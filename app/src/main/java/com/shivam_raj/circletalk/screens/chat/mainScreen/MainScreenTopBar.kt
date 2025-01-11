@@ -13,7 +13,9 @@ import androidx.compose.runtime.Composable
 @Composable
 fun MainScreenTopBar() {
     TopAppBar(
-        title = { Text("Circle Talk") },
+        title = {
+            Text("Circle Talk")
+        },
         actions = {
             IconButton(
                 onClick = {}
