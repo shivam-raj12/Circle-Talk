@@ -6,6 +6,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.appwrite.services.Account
+import io.appwrite.services.Databases
 import javax.inject.Singleton
 
 @Module
@@ -16,4 +17,7 @@ object Module {
     @Singleton
     fun provideAccount(): Account = Server.getAccountInstance()
 
+    @Provides
+    @Singleton
+    fun provideDatabase(): Databases = Server.getDatabaseInstance()
 }

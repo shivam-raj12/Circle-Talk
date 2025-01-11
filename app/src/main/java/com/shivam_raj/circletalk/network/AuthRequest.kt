@@ -10,6 +10,7 @@ import io.appwrite.services.Account
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -47,6 +48,7 @@ class AuthRequest @Inject constructor(
                 password = password
             )
             CurrentUserManager.storeCurrentUserId(context, user.userId)
+            createPushTarget()
             return null
         } catch (e: AppwriteException) {
             return e.message
@@ -54,15 +56,19 @@ class AuthRequest @Inject constructor(
     }
 
     suspend fun createPushTarget() {
-        val token = FCMTokenManager.getToken(context)
-        val target = FCMTokenManager.getTargetId(context)
-        combine(token, target) { tokenValue, targetValue ->
-            if (tokenValue != null && targetValue == null) {
-                withContext(Dispatchers.IO){
-                    val target = account.createPushTarget(ID.unique(), tokenValue)
-                    FCMTokenManager.storeTarget(context, target.id)
+        try {
+            val token = FCMTokenManager.getToken(context)
+            val target = FCMTokenManager.getTargetId(context)
+            combine(token, target) { tokenValue, targetValue ->
+                if (tokenValue != null && targetValue == null) {
+                    withContext(Dispatchers.IO) {
+                        val target = account.createPushTarget(ID.unique(), tokenValue)
+                        FCMTokenManager.storeTarget(context, target.id)
+                    }
                 }
-            }
-        }.collect()
+            }.take(1).collect()
+        } catch (_: Exception) {
+
+        }
     }
 }

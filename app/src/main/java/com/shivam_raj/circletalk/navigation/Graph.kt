@@ -1,15 +1,14 @@
 package com.shivam_raj.circletalk.navigation
 
-import android.util.Log
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavBackStackEntry
@@ -23,7 +22,9 @@ import com.shivam_raj.circletalk.screens.auth.loginAccount.LoginAccountScreen
 import com.shivam_raj.circletalk.screens.chat.mainScreen.MainScreen
 import com.shivam_raj.circletalk.server.Server
 import com.shivam_raj.circletalk.storage.CurrentUserManager
+import com.shivam_raj.circletalk.util.User
 import io.appwrite.exceptions.AppwriteException
+import io.appwrite.extensions.tryJsonCast
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 
@@ -36,21 +37,17 @@ fun NavGraph(
     val context = LocalContext.current
     LaunchedEffect(Unit) {
         try {
-            val ac=Server.getAccountInstance().get()
+            val ac = Server.getAccountInstance().get().tryJsonCast(User::class.java)
+            Server.initializeUser(ac)
             isUserLoggedIn = true
             onDataLoaded()
-            Log.d("TAG", "NavGraph: $ac")
-        } catch (e: AppwriteException) {
-            Log.d("TAG", "NavGraph: appwrite $e ")
+        } catch (_: AppwriteException) {
             isUserLoggedIn = false
             onDataLoaded()
-        } catch (e: Exception) {
-            Log.d("TAG", "NavGraph: $e")
+        } catch (_: Exception) {
             CurrentUserManager.getCurrentUserId(context).map {
-                Log.d("TAG", "NavGraph: $it")
                 it != null
             }.collectLatest {
-                Log.d("TAG", "NavGraph: $it")
                 isUserLoggedIn = it
                 onDataLoaded()
             }

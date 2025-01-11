@@ -1,7 +1,6 @@
 package com.shivam_raj.circletalk.screens.auth.createAccount
 
 import android.util.Patterns
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,7 +13,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -35,6 +33,7 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import com.shivam_raj.circletalk.network.AuthRequest
+import com.shivam_raj.circletalk.screens.AnimatedAlertDialog
 import com.shivam_raj.circletalk.screens.auth.FormInput
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -89,33 +88,38 @@ fun ContentForm(
             shape = MaterialTheme.shapes.medium,
             enabled = buttonEnabled,
             onClick = {
-            coroutineScope.launch{
-                val result = viewModel.createAccount()
-                if (result != null) {
-                    snackBarHostState.showSnackbar(result)
-                } else {
-                    onAccountCreated()
+                coroutineScope.launch {
+                    val result = viewModel.createAccount()
+                    if (result != null) {
+                        snackBarHostState.showSnackbar(result)
+                    } else {
+                        onAccountCreated()
+                    }
                 }
-            }
-        }) {
+            }) {
             Text(text = "Create Account")
         }
     }
-    AnimatedVisibility(
-        visible = viewModel.isLoading
-    ){
-        BasicAlertDialog(
-            onDismissRequest = {},
-            properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false, usePlatformDefaultWidth = false)
+    AnimatedAlertDialog(
+        visible = viewModel.isLoading,
+        dialogProperties = DialogProperties(
+            dismissOnBackPress = false,
+            dismissOnClickOutside = false,
+            usePlatformDefaultWidth = false
+        )
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier
+                .background(
+                    MaterialTheme.colorScheme.surface,
+                    shape = MaterialTheme.shapes.medium
+                )
+                .padding(horizontal = 12.dp, vertical = 16.dp)
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier.background(MaterialTheme.colorScheme.surface, shape = MaterialTheme.shapes.medium).padding(horizontal = 12.dp, vertical = 16.dp)
-            ) {
-                CircularProgressIndicator()
-                Text("Loading...", style = MaterialTheme.typography.bodyMedium)
-            }
+            CircularProgressIndicator()
+            Text("Loading...", style = MaterialTheme.typography.bodyMedium)
         }
     }
 }
