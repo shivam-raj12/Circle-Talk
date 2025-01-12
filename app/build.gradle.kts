@@ -89,4 +89,8 @@ dependencies {
 
     //Data Store
     implementation(libs.androidx.datastore.preferences)
+
+    //Coil Image Loading Library
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
 }

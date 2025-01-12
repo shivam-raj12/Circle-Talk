@@ -22,9 +22,7 @@ import com.shivam_raj.circletalk.screens.auth.loginAccount.LoginAccountScreen
 import com.shivam_raj.circletalk.screens.chat.mainScreen.MainScreen
 import com.shivam_raj.circletalk.server.Server
 import com.shivam_raj.circletalk.storage.CurrentUserManager
-import com.shivam_raj.circletalk.util.User
 import io.appwrite.exceptions.AppwriteException
-import io.appwrite.extensions.tryJsonCast
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 
@@ -37,7 +35,7 @@ fun NavGraph(
     val context = LocalContext.current
     LaunchedEffect(Unit) {
         try {
-            val ac = Server.getAccountInstance().get().tryJsonCast(User::class.java)
+            val ac = Server.getAccountInstance().get()
             Server.initializeUser(ac)
             isUserLoggedIn = true
             onDataLoaded()

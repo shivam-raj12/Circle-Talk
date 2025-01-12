@@ -1,6 +1,5 @@
 package com.shivam_raj.circletalk.network
 
-import com.shivam_raj.circletalk.server.Server
 import com.shivam_raj.circletalk.util.User
 import io.appwrite.Query
 import io.appwrite.extensions.tryJsonCast
@@ -15,11 +14,10 @@ class DBRequest @Inject constructor(
             databaseId = "circle_talk_db",
             collectionId = "users",
             queries = listOf(
-                Query.notEqual("username", Server.getUser().username),
                 Query.limit(15)
             )
         ).documents.map {
-            it.tryJsonCast(User::class.java) ?: User("", "", "")
+            it.tryJsonCast(User::class.java) ?: User.GuestUser
         }
     }
 }
