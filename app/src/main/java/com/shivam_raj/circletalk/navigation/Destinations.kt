@@ -5,6 +5,13 @@ import kotlinx.serialization.Serializable
 sealed class MainDestinations {
     @Serializable
     object MainScreen: MainDestinations()
+
+    @Serializable
+    data class ChatScreen(
+        val userId: String,
+        val userName: String,
+        val userProfile: String?
+    ): MainDestinations()
 }
 
 sealed class AuthDestinations {

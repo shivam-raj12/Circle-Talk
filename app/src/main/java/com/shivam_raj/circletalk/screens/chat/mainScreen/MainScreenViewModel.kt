@@ -45,7 +45,7 @@ class MainScreenViewModel @Inject constructor(
             databaseId = "circle_talk_db",
             collectionId = "users",
             queries = listOf(
-                Query.notEqual("username", Server.getUser()?.id ?: ""),
+                Query.notEqual("userId", Server.getUser()?.id ?: ""),
                 Query.limit(15)
             )
         ).documents.map { it.data.tryJsonCast(User::class.java) ?: User.GuestUser }

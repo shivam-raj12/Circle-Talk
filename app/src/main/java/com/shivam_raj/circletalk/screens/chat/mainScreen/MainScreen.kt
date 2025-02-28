@@ -1,5 +1,6 @@
 package com.shivam_raj.circletalk.screens.chat.mainScreen
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,17 +19,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil3.compose.AsyncImage
+import androidx.navigation.NavController
+import com.shivam_raj.circletalk.navigation.Auth
+import com.shivam_raj.circletalk.navigation.MainDestinations
 import com.shivam_raj.circletalk.notification.NotificationPermission
+import com.shivam_raj.circletalk.screens.UserProfile
 import com.shivam_raj.circletalk.util.User
 
 @Composable
-@Preview(showBackground = true)
 fun MainScreen(
+    navController: NavController,
     viewModel: MainScreenViewModel = hiltViewModel()
 ) {
     Column(
@@ -37,41 +40,61 @@ fun MainScreen(
             .systemBarsPadding(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        MainScreenTopBar()
-        SearchField()
+        MainScreenTopBar{
+            navController.navigate(Auth){
+                popUpTo(MainDestinations.MainScreen) {
+                    inclusive = true
+                }
+            }
+        }
         if (viewModel.isLoading.collectAsStateWithLifecycle().value) {
             CircularProgressIndicator()
         } else {
-            UserList(viewModel.userListState.collectAsStateWithLifecycle().value)
+            UserList(viewModel.userListState.collectAsStateWithLifecycle().value){
+                navController.navigate(MainDestinations.ChatScreen(
+                    userId = it.userId,
+                    userName = it.name,
+                    userProfile = it.profile
+                ))
+            }
         }
     }
     NotificationPermission()
 }
 
 @Composable
-fun UserList(list: List<User>) {
+fun UserList(
+    list: List<User>,
+    onUserClicked: (User) -> Unit
+) {
     LazyColumn {
         items(list) {
-            UserCard(it)
+            UserCard(it, onUserClicked)
         }
     }
 }
 
 @Composable
-fun UserCard(user: User) {
+fun UserCard(
+    user: User,
+    onUserClicked:(User)-> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable {
+                onUserClicked(user)
+            }
             .padding(horizontal = 8.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        AsyncImage(
-            model = user.profile,
-            contentDescription = null,
+        UserProfile(
             modifier = Modifier
-                .size(50.dp)
-                .clip(CircleShape)
+                .size(40.dp)
+                .clip(CircleShape),
+            name = user.name,
+            profileUri = user.profile
         )
         Column(
             modifier = Modifier.weight(1f)
@@ -81,7 +104,7 @@ fun UserCard(user: User) {
                 style = MaterialTheme.typography.titleMedium
             )
             Text(
-                text = user.username,
+                text = user.email,
                 style = MaterialTheme.typography.bodyMedium
             )
         }

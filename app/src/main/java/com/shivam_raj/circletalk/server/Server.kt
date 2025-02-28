@@ -5,6 +5,8 @@ import io.appwrite.Client
 import io.appwrite.models.User
 import io.appwrite.services.Account
 import io.appwrite.services.Databases
+import io.appwrite.services.Functions
+import io.appwrite.services.Realtime
 
 object Server {
     @Volatile
@@ -33,4 +35,7 @@ object Server {
 
     fun getDatabaseInstance() = Databases(client)
 
+    fun getRealtimeInstance() = Realtime(client)
+
+    fun getFunctionsInstance() = Functions(client)
 }

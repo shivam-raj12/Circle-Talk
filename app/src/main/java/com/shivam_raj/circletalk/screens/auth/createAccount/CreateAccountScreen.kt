@@ -50,25 +50,25 @@ fun CreateAccountScreen(
                 }
             }
         )
-        BottomDesignedButton(
-            modifier = Modifier.fillMaxSize(),
-            text = buildAnnotatedString {
-                append("Already have an account? ")
-                withStyle(
-                    SpanStyle(
-                        textDecoration = TextDecoration.Underline,
-                        fontWeight = FontWeight.Bold
-                    )
-                ) {
-                    append("Login")
-                }
-            },
-            designColor = MaterialTheme.colorScheme.primaryContainer,
-            onClick = {
-                navController.navigateUp()
-            }
-        )
     }
+    BottomDesignedButton(
+        modifier = Modifier.fillMaxSize(),
+        text = buildAnnotatedString {
+            append("Already have an account? ")
+            withStyle(
+                SpanStyle(
+                    textDecoration = TextDecoration.Underline,
+                    fontWeight = FontWeight.Bold
+                )
+            ) {
+                append("Login")
+            }
+        },
+        designColor = MaterialTheme.colorScheme.primaryContainer,
+        onClick = {
+            navController.navigateUp()
+        }
+    )
     Box(
         modifier = Modifier
             .fillMaxSize()

@@ -17,8 +17,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.shivam_raj.circletalk.screens.auth.createAccount.CreateAccountScreen
 import com.shivam_raj.circletalk.screens.auth.loginAccount.LoginAccountScreen
+import com.shivam_raj.circletalk.screens.chat.chatScreen.ChatScreen
 import com.shivam_raj.circletalk.screens.chat.mainScreen.MainScreen
 import com.shivam_raj.circletalk.server.Server
 import com.shivam_raj.circletalk.storage.CurrentUserManager
@@ -73,7 +75,11 @@ fun NavGraph(
             startDestination = MainDestinations.MainScreen
         ) {
             animatedComposable<MainDestinations.MainScreen> {
-                MainScreen()
+                MainScreen(navController)
+            }
+            animatedComposable<MainDestinations.ChatScreen> {
+                val args = it.toRoute<MainDestinations.ChatScreen>()
+                ChatScreen(navController, args.userId, args.userName, args.userProfile)
             }
         }
     }

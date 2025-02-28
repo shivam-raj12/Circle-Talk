@@ -50,20 +50,20 @@ private fun getPath(size: Size, direction: Direction) : Path{
     val path = Path()
     return path.apply {
         if (direction == Direction.LEFT) {
-            moveTo(0f, size.height * 0.7f)
+            moveTo(0f, size.height * 0.85f)
             quadraticTo(
-                size.width * 0.6f,
-                size.height * 0.65f,
+                size.width * 0.7f,
+                size.height * 0.85f,
                 size.width,
                 size.height
             )
             lineTo(0f, size.height)
             close()
         } else {
-            moveTo(size.width, size.height * 0.7f)
+            moveTo(size.width, size.height * 0.85f)
             quadraticTo(
-                size.width * 0.4f,
-                size.height * 0.65f,
+                size.width * 0.3f,
+                size.height * 0.85f,
                 0f,
                 size.height
             )

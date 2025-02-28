@@ -30,6 +30,25 @@ fun LoginAccountScreen(
     navController: NavController
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
+    BottomDesignedButton(
+        modifier = Modifier.fillMaxSize(),
+        text = buildAnnotatedString {
+            append("Don't have an account? ")
+            withStyle(
+                SpanStyle(
+                    textDecoration = TextDecoration.Underline,
+                    fontWeight = FontWeight.Bold
+                )
+            ) {
+                append("Create Account")
+            }
+        },
+        designColor = MaterialTheme.colorScheme.tertiaryContainer,
+        direction = Direction.RIGHT,
+        onClick = {
+            navController.navigate(AuthDestinations.CreateAccountScreen)
+        }
+    )
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -49,25 +68,6 @@ fun LoginAccountScreen(
                         inclusive = true
                     }
                 }
-            }
-        )
-        BottomDesignedButton(
-            modifier = Modifier.fillMaxSize(),
-            text = buildAnnotatedString {
-                append("Don't have an account? ")
-                withStyle(
-                    SpanStyle(
-                        textDecoration = TextDecoration.Underline,
-                        fontWeight = FontWeight.Bold
-                    )
-                ) {
-                    append("Create Account")
-                }
-            },
-            designColor = MaterialTheme.colorScheme.tertiaryContainer,
-            direction = Direction.RIGHT,
-            onClick = {
-                navController.navigate(AuthDestinations.CreateAccountScreen)
             }
         )
     }
